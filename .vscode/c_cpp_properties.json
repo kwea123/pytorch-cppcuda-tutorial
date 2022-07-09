@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/home/ubuntu/anaconda3/envs/cppcuda/include/python3.8",
+                "/home/ubuntu/anaconda3/envs/cppcuda/lib/python3.8/site-packages/torch/include",
+                "/home/ubuntu/anaconda3/envs/cppcuda/lib/python3.8/site-packages/torch/include/torch/csrc/api/include"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c17",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "linux-clang-x64"
+        }
+    ],
+    "version": 4
+}
