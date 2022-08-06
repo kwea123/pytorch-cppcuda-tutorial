@@ -5,3 +5,7 @@ tutorial playlist: https://www.youtube.com/watch?v=l_Rpk6CRJYI&list=PLDV2CyUo4q-
 
 
 CUDA explanation in video 2: https://nyu-cds.github.io/python-gpu/02-cuda/
+
+C++ API in video 3: https://pytorch.org/cppdocs/
+
+kernel launching: https://pytorch.org/tutorials/advanced/cpp_extension.html
