@@ -34,7 +34,7 @@ __global__ void trilinear_fw_kernel(
 
 torch::Tensor trilinear_fw_cu(
     torch::Tensor feats,
-    torch::Tensor points,
+    torch::Tensor points
 ){
     const int N = feats.size(0), F = feats.size(2);
     
