@@ -32,19 +32,53 @@ def trilinear_interpolation_py(feats, points):
     return feats_interp
 
 
+class Trilinear_interpolation_cuda(torch.autograd.Function):
+    @staticmethod
+    def forward(ctx, feats, points):
+        feat_interp = cppcuda_tutorial.trilinear_interpolation_fw(feats, points)
+
+        ctx.save_for_backward(feats, points)
+
+        return feat_interp
+
+    @staticmethod
+    def backward(ctx, dL_dfeat_interp):
+        feats, points = ctx.saved_tensors
+
+        dL_dfeats = cppcuda_tutorial.trilinear_interpolation_bw(dL_dfeat_interp.contiguous(), feats, points)
+
+        return dL_dfeats, None
+
+
 if __name__ == '__main__':
     N = 65536; F = 256
-    feats = torch.rand(N, 8, F, device='cuda').requires_grad_()
+    rand = torch.rand(N, 8, F, device='cuda')
+    feats = rand.clone().requires_grad_()
+    feats2 = rand.clone().requires_grad_()
     points = torch.rand(N, 3, device='cuda')*2-1
 
     t = time.time()
-    out_cuda = cppcuda_tutorial.trilinear_interpolation(feats, points)
+    out_cuda = Trilinear_interpolation_cuda.apply(feats2, points)
     torch.cuda.synchronize()
-    print('   cuda time', time.time()-t, 's')
+    print('   cuda fw time', time.time()-t, 's')
 
     t = time.time()
     out_py = trilinear_interpolation_py(feats, points)
     torch.cuda.synchronize()
-    print('pytorch time', time.time()-t, 's')
+    print('pytorch fw time', time.time()-t, 's')
 
-    print(torch.allclose(out_py, out_cuda))
+    print('fw all close', torch.allclose(out_py, out_cuda))
+
+    t = time.time()
+    loss2 = out_cuda.sum()
+    loss2.backward()
+    torch.cuda.synchronize()
+    print('   cuda bw time', time.time()-t, 's')
+
+    t = time.time()
+    loss = out_py.sum()
+    loss.backward()
+    torch.cuda.synchronize()
+    print('pytorch bw time', time.time()-t, 's')
+
+    print('bw all close', torch.allclose(feats.grad, feats2.grad))
