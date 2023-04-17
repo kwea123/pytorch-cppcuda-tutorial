@@ -38,7 +38,7 @@ torch::Tensor trilinear_fw_cu(
 ){
     const int N = feats.size(0), F = feats.size(2);
     
-    torch::Tensor feat_interp = torch::zeros({N, F}, feats.options());
+    torch::Tensor feat_interp = torch::empty({N, F}, feats.options());
 
     const dim3 threads(16, 16);
     const dim3 blocks((N+threads.x-1)/threads.x, (F+threads.y-1)/threads.y);
@@ -96,7 +96,7 @@ torch::Tensor trilinear_bw_cu(
 ){
     const int N = feats.size(0), F = feats.size(2);
     
-    torch::Tensor dL_dfeats = torch::zeros({N, 8, F}, feats.options());
+    torch::Tensor dL_dfeats = torch::empty({N, 8, F}, feats.options());
 
     const dim3 threads(16, 16);
     const dim3 blocks((N+threads.x-1)/threads.x, (F+threads.y-1)/threads.y);
